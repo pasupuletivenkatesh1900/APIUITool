@@ -1,30 +1,24 @@
 import App from "../../src/App";
 describe("Get Request", () => {
-  var accessToken =
-    "40dbd65be435a8bec260a4add0119454c3053be472908eddf2e42b09ddd2fbdb";
   it("Get Request", () => {
     cy.request({
       method: "GET",
-      url: "https://gorest.co.in/public/v2/posts",
-      headers: {
-        authorization: "Bearer" + accessToken,
-      },
-    }).then((res) => {
-      console.log(res);
-      //cy.mount(<App onPrint={res.body} />);
-      cy.mount(<App onPrint={JSON.stringify(res.body)} />);
-    });
-  });
-  it("Get Request 2", () => {
-    cy.request({
-      method: "GET",
-      url: "https://gorest.co.in/public/v2/posts",
-      headers: {
-        authorization: "Bearer" + accessToken,
-      },
-    }).then((res) => {
-      console.log(res.body.length);
-      cy.mount(<App onPrint={JSON.stringify(res.body)} />);
+      url: "https://jsonplaceholder.typicode.com/posts",
+    }).then((res1) => {
+      cy.request({
+        method: "GET",
+        url: "https://jsonplaceholder.typicode.com/posts",
+      }).then((res2) => {
+        let statusValue = expect(res1.status).to.equal(res2.status);
+        expect(res1.body).to.deep.equal(res2.body);
+        cy.mount(
+          <App
+            onPrint1={JSON.stringify(res1.body)}
+            onPrint2={JSON.stringify(res2.body)}
+            someValue={statusValue.__flags.object}
+          />
+        );
+      });
     });
   });
 });
